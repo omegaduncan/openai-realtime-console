@@ -61,6 +61,9 @@ export function ConsolePage() {
     : localStorage.getItem('tmp::voice_api_key') ||
       prompt('OpenAI API Key') ||
       '';
+  const baseUrl = USE_LOCAL_RELAY_SERVER_URL
+    ? ''
+    : localStorage.getItem('tmp::base_url') || 'api.openai.com/v1';
   if (apiKey !== '') {
     localStorage.setItem('tmp::voice_api_key', apiKey);
   }
@@ -83,6 +86,7 @@ export function ConsolePage() {
         ? { url: USE_LOCAL_RELAY_SERVER_URL }
         : {
             apiKey: apiKey,
+            url: "wss://" + baseUrl + "/realtime",
             dangerouslyAllowAPIKeyInBrowser: true,
           }
     )
@@ -149,8 +153,19 @@ export function ConsolePage() {
   const resetAPIKey = useCallback(() => {
     const apiKey = prompt('OpenAI API Key');
     if (apiKey !== null) {
-      localStorage.clear();
+      // localStorage.clear();
       localStorage.setItem('tmp::voice_api_key', apiKey);
+      window.location.reload();
+    }
+  }, []);
+
+  const resetBseUrl = useCallback(() => {
+    let baseUrl = prompt('BaseUrl: default api.openai.com/v1');
+    if (baseUrl !== null) {
+      // localStorage.clear();
+      // remove https:// and http:// and wss
+      baseUrl = baseUrl.replace(/(^\w+:|^)\/\//, '');
+      localStorage.setItem('tmp::base_url', baseUrl);
       window.location.reload();
     }
   }, []);
@@ -513,7 +528,18 @@ export function ConsolePage() {
               icon={Edit}
               iconPosition="end"
               buttonStyle="flush"
-              label={`api key: ${apiKey.slice(0, 3)}...`}
+              label={`base url: ${baseUrl}`}
+              onClick={() => resetBseUrl()}
+            />
+          )}
+        </div>
+        <div className="content-api-key">
+          {!USE_LOCAL_RELAY_SERVER_URL && (
+            <Button
+              icon={Edit}
+              iconPosition="end"
+              buttonStyle="flush"
+              label={`api key: ${apiKey.slice(0, 7)}...`}
               onClick={() => resetAPIKey()}
             />
           )}
