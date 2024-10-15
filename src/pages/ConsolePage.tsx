@@ -63,7 +63,7 @@ export function ConsolePage() {
       '';
   const baseUrl = USE_LOCAL_RELAY_SERVER_URL
     ? ''
-    : localStorage.getItem('tmp::base_url') || 'api.openai.com/v1';
+    : localStorage.getItem('tmp::base_url') || 'zeta.zeabur.app/v1';
   if (apiKey !== '') {
     localStorage.setItem('tmp::voice_api_key', apiKey);
   }
@@ -160,7 +160,7 @@ export function ConsolePage() {
   }, []);
 
   const resetBseUrl = useCallback(() => {
-    let baseUrl = prompt('BaseUrl: default api.openai.com/v1');
+    let baseUrl = prompt('BaseUrl: default zeta.zeabur.app/v1');
     if (baseUrl !== null) {
       // localStorage.clear();
       // remove https:// and http:// and wss
